@@ -23,6 +23,9 @@ private:
                 ret.push_back(i);
             ++i;
         }
+//        for (unsigned m = 0; m < ret.size(); m++)
+//          printf("%d ", ret[i]);
+//        printf("\n");
         return ret;
     }
 
@@ -51,15 +54,46 @@ public:
             Logger::log(Logger::ERROR,"File not found at (%s)\n",path);
             exit(1);
         }
-        std::unique_ptr<char[]> buff(new char[MAX_LINE]);
-        std::vector<std::string> buffers;
-        idx_t idx = 0;
-        while(fgets(buff.get(),MAX_LINE,fp)){
-            auto tokens = tokenize(buff.get());
-            auto values = parse(tokens,buff.get());
-            consume(idx,values);
-            ++idx;
+
+        unsigned int dim;
+        fread(&dim, sizeof(unsigned int), 1, fp);
+
+        fseek(fp, 0, SEEK_END);
+        size_t fsize = ftell(fp);
+        unsigned int num = (unsigned)(fsize / (dim + 1) / 4);
+
+        fseek(fp, 0, SEEK_SET);
+        for (size_t i = 0; i < num; i++) {
+          fseek(fp, 4, SEEK_CUR);
+          std::vector<std::pair<int, value_t> > values; 
+          for (size_t j = 0; j < dim; j++) {
+            value_t val;
+            fread(&val, sizeof(value_t), 1, fp);
+            values.push_back(std::make_pair((int)j, val));
+          }
+          consume ((idx_t)i, values);
+//            for (unsigned m = 0; m < values.size(); m++) {
+//              printf("(%d, %lf) ", values[m].first, values[m].second);
+//            }
+//            printf("\n\n");
         }
+//        std::unique_ptr<char[]> buff(new char[MAX_LINE]);
+//        std::vector<std::string> buffers;
+//        idx_t idx = 0;
+//        while(fgets(buff.get(),MAX_LINE,fp)){
+//            auto tokens = tokenize(buff.get());
+//            auto values = parse(tokens,buff.get());
+//            consume(idx,values);
+////            for (unsigned m = 0; m < tokens.size(); m++) {
+////              printf("%d ", tokens[m]);
+////            }
+////            printf("\n");
+//            for (unsigned m = 0; m < values.size(); m++) {
+//              printf("(%d, %lf) ", values[m].first, values[m].second);
+//            }
+//            printf("\n\n");
+//            ++idx;
+//        }
         fclose(fp);
     }
     

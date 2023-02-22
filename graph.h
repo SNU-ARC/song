@@ -148,7 +148,9 @@ public:
     
     void add_vertex(idx_t vertex_id,std::vector<std::pair<int,value_t>>& point){
         std::vector<idx_t> neighbor;
+        printf("[ARC-SJ] test_0\n");
         search_top_k(point,CONSTRUCT_SEARCH_BUDGET,neighbor);
+        printf("[ARC-SJ] test_1\n");
         //fprintf(stderr,"[DEBUG] adding %zu, top %d:",vertex_id,degree);
         int num_neighbors = degree < neighbor.size() ? degree : neighbor.size();
         auto offset = ((size_t)vertex_id) << vertex_offset_shift;

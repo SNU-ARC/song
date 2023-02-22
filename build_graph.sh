@@ -6,4 +6,4 @@ if [ "$#" -ne 4 ]; then
   exit 1
 fi
 
-$(dirname $0)/song build $1 0 0 $2 $3 0 $4
+$(dirname $0)/song build $1 0 0 $2 $3 0 $4 0

@@ -415,6 +415,7 @@ public:
 		}
 		std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
 		fprintf(stderr,"using %ld microseconds\n",std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_begin).count());
+		fprintf(stderr,"using QPS: %lf\n", (float)(queries.size()) / std::chrono::duration<double>(time_end - time_begin).count());
 		//printf("using %ld microseconds\n",std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_begin).count());
 		cudaFree(d_data);
 		cudaFree(d_query);

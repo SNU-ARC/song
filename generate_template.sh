@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+rm -rf auto_tune_bloom build_template
+
 make auto_tune_bloom || true
 
 mkdir build_template || true
