@@ -47,7 +47,7 @@ void usage(char** argv){
 }
 
 int main(int argc,char** argv){
-    if(argc != 9){
+    if(argc != 10 && argc != 11){
         usage(argv);
         return 1;
     }

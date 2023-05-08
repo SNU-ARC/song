@@ -265,8 +265,8 @@ public:
         auto cnt = fread(&edges[0],sizeof(edges[0]) * (num_vertices << vertex_offset_shift),1,fp);
         fclose(fp);
     }
-    
-	void search_top_k_batch(const std::vector<std::vector<std::pair<int,value_t>>>& queries,int k,std::vector<std::vector<idx_t>>& results){
+
+    void search_top_k_batch(const std::vector<std::vector<std::pair<int,value_t>>>& queries,int k,std::vector<std::vector<idx_t>>& results){
     	WarpAStarAccelerator::astar_multi_start_search_batch(queries,k,results,data->get(0),edges.data(),vertex_offset_shift,data->max_vertices(),data->get_dim());
         //fprintf(stderr,"finished one batch\n");
     }

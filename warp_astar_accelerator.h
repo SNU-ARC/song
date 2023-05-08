@@ -29,7 +29,7 @@
 #define N_MULTIPROBE 1
 #define FINISH_CNT 1
 
-#define __ENABLE_MEASURE
+//#define __ENABLE_MEASURE
 
 struct Measure{
 	unsigned long long stage1 = 0;
@@ -342,18 +342,25 @@ void warp_independent_search_kernel(value_t* d_data,value_t* d_query,idx_t* d_re
 
 class WarpAStarAccelerator{
 private:
-
+		static value_t* d_data;
+                static value_t* d_query;
+                static idx_t* d_result;
+                static idx_t* d_graph;
 public:
+    static void free_all() {
+	        cudaFree(d_data);
+                cudaFree(d_graph);
+    }
+
     static void astar_multi_start_search_batch(const std::vector<std::vector<std::pair<int,value_t>>>& queries,int k,std::vector<std::vector<idx_t>>& results,value_t* h_data,idx_t* h_graph,int vertex_offset_shift,int num,int dim){
-        value_t* d_data;
-		value_t* d_query;
-		idx_t* d_result;
-		idx_t* d_graph;
-		
-		cudaMalloc(&d_data,sizeof(value_t) * num * dim);
-		cudaMalloc(&d_graph,sizeof(idx_t) * (num << vertex_offset_shift));
-		cudaMemcpy(d_data,h_data,sizeof(value_t) * num * dim,cudaMemcpyHostToDevice);
-		cudaMemcpy(d_graph,h_graph,sizeof(idx_t) * (num << vertex_offset_shift),cudaMemcpyHostToDevice);
+		if (d_data == NULL) {
+			cudaMalloc(&d_data,sizeof(value_t) * num * dim);
+			cudaMemcpy(d_data,h_data,sizeof(value_t) * num * dim,cudaMemcpyHostToDevice);
+		}
+		if (d_graph == NULL) {
+			cudaMalloc(&d_graph,sizeof(idx_t) * (num << vertex_offset_shift));
+			cudaMemcpy(d_graph,h_graph,sizeof(idx_t) * (num << vertex_offset_shift),cudaMemcpyHostToDevice);
+		}
 
 #ifdef __ENABLE_MEASURE
 		Measure* d_measure;
@@ -361,7 +368,6 @@ public:
 		cudaMalloc(&d_measure,sizeof(Measure));
 		cudaMemcpy(d_measure,&h_measure,sizeof(Measure),cudaMemcpyHostToDevice);
 #endif
-
 		auto time_begin = std::chrono::steady_clock::now();
 		std::unique_ptr<value_t[]> h_query = std::unique_ptr<value_t[]>(new value_t[queries.size() * dim]);
 		memset(h_query.get(),0,sizeof(value_t) * queries.size() * dim);
@@ -374,7 +380,7 @@ public:
 
 		cudaMalloc(&d_query,sizeof(value_t) * queries.size() * dim);
 		cudaMalloc(&d_result,sizeof(idx_t) * queries.size() * TOPK);
-		
+
 		cudaMemcpy(d_query,h_query.get(),sizeof(value_t) * queries.size() * dim,cudaMemcpyHostToDevice);
 
 #ifdef __ENABLE_MEASURE
@@ -395,7 +401,7 @@ public:
 		fprintf(stderr,"kernel takes %ld microseconds\n",std::chrono::duration_cast<std::chrono::microseconds>(kernel_end - kernel_begin).count());
 		std::chrono::steady_clock::time_point back_begin = std::chrono::steady_clock::now();
 #endif
-		cudaMemcpy(h_result.get(),d_result,sizeof(idx_t) * queries.size() * TOPK,cudaMemcpyDeviceToHost);
+		cudaMemcpy(h_result.get(), d_result, sizeof(idx_t) * queries.size() * TOPK, cudaMemcpyDeviceToHost);
 
 #ifdef __ENABLE_MEASURE
 		std::chrono::steady_clock::time_point back_end = std::chrono::steady_clock::now();
@@ -405,6 +411,7 @@ public:
 		auto stage_sum = h_measure.stage1 + h_measure.stage2 + h_measure.stage3;
 		fprintf(stderr,"stages percentage %.2f %.2f %.2f\n", h_measure.stage1 * 100.0 / stage_sum,
 			h_measure.stage2 * 100.0 / stage_sum,h_measure.stage3 * 100.0 / stage_sum);
+		
 #endif
 		results.clear();
 		for(int i = 0;i < queries.size();++i){
@@ -417,10 +424,10 @@ public:
 		fprintf(stderr,"using %ld microseconds\n",std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_begin).count());
 		fprintf(stderr,"using QPS: %lf\n", (float)(queries.size()) / std::chrono::duration<double>(time_end - time_begin).count());
 		//printf("using %ld microseconds\n",std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_begin).count());
-		cudaFree(d_data);
+		//cudaFree(d_data);
 		cudaFree(d_query);
 		cudaFree(d_result);
-		cudaFree(d_graph);
+		//cudaFree(d_graph);
     }
 };
 
