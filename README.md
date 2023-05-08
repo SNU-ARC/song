@@ -7,7 +7,7 @@ Please refer to original [readme](https://github.com/SNU-ARC/song/blob/master/RE
 
 ### Prerequisites
 
-Our prerequisites align with original SONG repository. Following are known versions to work. 
+Our prerequisites align with original [SONG repository](https://github.com/SNU-ARC/song). Following are known versions to work. 
 
 ```shell
 g++ 5.4.0, 9.3.0
@@ -16,7 +16,7 @@ CUDA 10.0, 10.1
 
 ## Usage
 
-We provide script which builds graph, run queries and parses the result. All results can be found on folders result/song_single_batch, result/song_whole_batch. 
+We provide script which builds graph, run queries and parses the result. All results can be found on folders **result/song_single_batch**, **result/song_whole_batch** in csv format. 
 
 ```shell
 $ git clone https://github.com/SNU-ARC/song
