@@ -7,6 +7,8 @@ Please refer to original [readme](https://github.com/SNU-ARC/song/blob/master/RE
 
 ### Prerequisites
 
+Our prerequisites align with original SONG repository. Following are known versions to work. 
+
 ```shell
 g++ 5.4.0, 9.3.0
 CUDA 10.0, 10.1
