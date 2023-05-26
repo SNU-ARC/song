@@ -13,7 +13,7 @@ CUDA 10.0, 10.1
 
 ## 1. Generate template to run code for specific dataset and priority queue size
 
-VEC_DIM is vector dimension of the dataset. This value depends on the dataset. PQ_SIZE is priority queue size used in the approximate nearest neighbor search algorithm. Setting higher PQ_SIZE increases recall, however as mentioned in [README](https://github.com/SNU-ARC/song/blob/master/README.md), PQ_SIZE cannot be increased arbitrarily and it's maximum value depends on memory size.
+`VEC_DIM` is vector dimension of the dataset. This value depends on the dataset. `PQ_SIZE` is priority queue size used in the approximate nearest neighbor search algorithm. Setting higher `PQ_SIZE` increases recall, however as mentioned in [README](https://github.com/SNU-ARC/song/blob/master/README.md), `PQ_SIZE` cannot be increased arbitrarily and it's maximum value depends on memory size.
 
 ```shell
 Usage: ./generate_template.sh && ./fill_parameters.sh PQ_SIZE VEC_DIM l2
@@ -22,7 +22,7 @@ For example: ./generate_template.sh && ./fill_parameters.sh 50 128 l2
 
 ## 2. Build graph index to run approximate nearest neighbor search algorithm
 
-BASE_VECTOR_PATH denotes path of vectors used to build graph. This yields bfsg.data and bfsg.graph, which would be used to run query. 
+`BASE_VECTOR_PATH` denotes path of vectors used to build graph. This yields `bfsg.data` and `bfsg.graph`, which would be used to run query. 
 
 ```shell
 Usage: ./build_graph.sh BASE_VECTOR_PATH NUM_VEC VEC_DIM l2 
